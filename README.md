@@ -1,19 +1,19 @@
 # huaxin_mall
 
-## Project setup
+## 初始化项目
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 运行项目
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 打包项目
 ```
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 自定义配置
+参照 [Configuration Reference](https://cli.vuejs.org/config/).
