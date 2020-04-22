@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <h2>分类</h2>
   </div>
 </template>

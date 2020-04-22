@@ -26,12 +26,15 @@ body {
   color: var(--color-text);
   /* rem vw/vh */
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 a {
   color: var(--color-text);
+  /*去除a标签的默认下划线*/
   text-decoration: none;
+  /*去除移动端下 a标签的点击高亮*/
+  -webkit-tap-highlight-color: transparent;
 }
 
 /*清除浮动的公共类*/
