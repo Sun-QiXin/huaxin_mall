@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Detail from "../views/detail/Detail";
 
 Vue.use(VueRouter)
 
@@ -36,6 +37,13 @@ const routes = [
       title:'档案'
     }
   },
+  {
+    path: '/detail/:iid',
+    component:()=>import('views/detail/Detail'),
+    meta: {
+      title: '商品详情'
+    }
+  }
 ]
 
 const router = new VueRouter({

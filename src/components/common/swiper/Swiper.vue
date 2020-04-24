@@ -1,11 +1,11 @@
 <template>
   <div id="hy-swiper">
-    <div class="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
+    <div id="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
       <slot></slot>
     </div>
     <slot name="indicator"></slot>
     <div class="indicator">
-      <slot name="indicator" v-if="showIndicator && slideCount>1">
+      <slot name="indicator" v-if="showIndicator && slideCount>=1">
         <div v-for="(item, index) in slideCount" class="indicator-item" :class="{active: index === currentIndex-1}"
              :key="index"></div>
       </slot>
@@ -25,7 +25,7 @@
       //延迟多久开始轮播
       animDuration: {
         type: Number,
-        default: 300
+        default: 200
       },
       //默认用户滑动到4/1图片就跳过去
       moveRatio: {
@@ -48,13 +48,15 @@
       }
     },
     mounted: function () {
-      // 1.操作DOM, 在前后添加Slide
-      setTimeout(() => {
-        this.handleDom();
+      this.$nextTick(()=>{
+        // 1.操作DOM, 在前后添加Slide
+        setTimeout(() => {
+          this.handleDom();
 
-        // 2.开启定时器
-        this.startTimer();
-      }, 100)
+          // 2.开启定时器
+          this.startTimer();
+        }, 2000)
+      })
     },
     methods: {
       /**
@@ -122,7 +124,7 @@
        */
       handleDom: function () {
         // 1.获取要操作的元素
-        let swiperEl = document.querySelector('.swiper');
+        let swiperEl = document.querySelector('#swiper');
         let slidesEls = swiperEl.getElementsByClassName('slide');
 
         // 2.保存个数
@@ -219,7 +221,7 @@
     position: relative;
   }
 
-  .swiper {
+  #swiper {
     display: flex;
   }
 

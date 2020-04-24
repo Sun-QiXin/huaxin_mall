@@ -1,17 +1,15 @@
 <template>
   <div id="goods-list-item">
-    <a :href="goodsItem.link">
-      <img :src="goodsItem.show.img" alt="" class="img" @load="imageLoad">
-      <p>{{goodsItem.title}}</p>
-      <div class="msg">
+    <img :src="goodsItem.show.img" alt="" class="img" @load="imageLoad">
+    <p>{{goodsItem.title}}</p>
+    <div class="msg">
         <span class="price">
         <span>限时价</span>
         {{goodsItem.price}}
         </span>
-        <span class="collect">{{goodsItem.orgPrice}}</span>
-      </div>
-      <button>立即购买</button>
-    </a>
+      <span class="collect">{{goodsItem.orgPrice}}</span>
+    </div>
+    <button @click="goodsItemBuyClick">立即购买</button>
   </div>
 </template>
 
@@ -26,9 +24,14 @@
         }
       }
     },
-    methods:{
-      imageLoad(){
+    methods: {
+      //监听图片加载
+      imageLoad() {
         this.$bus.$emit('itemImageLoad');
+      },
+      //监听按钮点击
+      goodsItemBuyClick(){
+        this.$router.push("/detail/"+this.goodsItem.iid);
       }
     }
   }
@@ -51,7 +54,7 @@
     background-size: cover;
   }
 
-  @media (width: 375px){
+  @media (width: 375px) {
     #goods-list-item .img {
       border-radius: 7px;
       border: 2px solid #fff;
