@@ -1,6 +1,6 @@
 <template>
   <div id="goods-list-item">
-    <img :src="goodsItem.show.img" alt="" class="img" @load="imageLoad">
+    <img :src="showImage" alt="" class="img" @load="imageLoad">
     <p>{{goodsItem.title}}</p>
     <div class="msg">
         <span class="price">
@@ -24,14 +24,19 @@
         }
       }
     },
+    computed: {
+      showImage() {
+        return this.goodsItem.image || this.goodsItem.show.img;
+      }
+    },
     methods: {
       //监听图片加载
       imageLoad() {
         this.$bus.$emit('itemImageLoad');
       },
       //监听按钮点击
-      goodsItemBuyClick(){
-        this.$router.push("/detail/"+this.goodsItem.iid);
+      goodsItemBuyClick() {
+        this.$router.push("/detail/" + this.goodsItem.iid);
       }
     }
   }
@@ -50,16 +55,26 @@
     border-radius: 7px;
     border: 2px solid #fff;
     width: 100%;
-    height: 39vh;
+    height: 44vh;
     background-size: cover;
   }
 
-  @media (width: 375px) {
+  @media (width: 375px) and (height: 667px) {
     #goods-list-item .img {
       border-radius: 7px;
       border: 2px solid #fff;
       width: 100%;
-      height: 34vh;
+      height: 44vh;
+      background-size: cover;
+    }
+  }
+
+  @media (width: 375px) and (height: 812px) {
+    #goods-list-item .img {
+      border-radius: 7px;
+      border: 2px solid #fff;
+      width: 100%;
+      height: 36vh;
       background-size: cover;
     }
   }
@@ -77,7 +92,7 @@
       border-radius: 7px;
       border: 2px solid #fff;
       width: 100%;
-      height: 34vh;
+      height: 40vh;
       background-size: cover;
     }
   }
@@ -95,7 +110,7 @@
       border-radius: 7px;
       border: 2px solid #fff;
       width: 100%;
-      height: 25vh;
+      height: 30vh;
       background-size: cover;
     }
   }
@@ -113,7 +128,7 @@
       border-radius: 7px;
       border: 2px solid #fff;
       width: 100%;
-      height: 50vh;
+      height: 65vh;
       background-size: cover;
     }
   }

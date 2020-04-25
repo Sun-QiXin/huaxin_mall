@@ -22,6 +22,12 @@
     components: {
       NavBar
     },
+    props: {
+      titleCurrentIndex: {
+        type: Number,
+        default: 0
+      }
+    },
     data() {
       return {
         titles: [`商品`, `参数`, `评论`, `推荐`],
@@ -32,11 +38,18 @@
       //1、点击切换标签
       detailTitleClick(index) {
         this.currentIndex = index;
+        this.$emit('detailTitleClick', index);
       },
 
       //2、点击返回
       detailBackClick() {
         this.$router.back();
+      }
+    },
+    watch: {
+      //根据详情页面传过来的索引值改变下标
+      titleCurrentIndex(value) {
+        this.currentIndex = value;
       }
     }
   }

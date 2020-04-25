@@ -9,7 +9,7 @@
                  :titles="[`流行`,`新款`,`精选`]" @tabClick="tabClick" ref="tabControl1"/>
 
     <scroll class="content" ref="scroll"
-            :probe-type="3" :pull-up-load=true :pull-down-refresh=true
+            :probe-type="3" :pull-up-load=true :pull-down-refresh=true :pull-down-refresh-stop=40
             @scroll="ContentScroll"
             @pullingUp="loadMore"
             @pullingDown="homePullingDown">
@@ -41,7 +41,7 @@
 
   //封装的工具函数
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {debounce} from "commonjs/utils";
+  import {itemImgListenerMixin} from "commonjs/mixin";
 
 
   export default {
@@ -158,9 +158,9 @@
       //6、获取tabControl组件距离顶部的距离,所有的组件都有一个$el属性，用于拿到组件中的元素
       //需要监听上半部分的图片加载完成
       swiperImgLoad() {
-        setTimeout(() => {
-          this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
-        }, 100)
+        //mixin中的防抖
+        this.mixinRefresh();
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
       },
 
       /**
@@ -193,14 +193,10 @@
       this.getHomeGoods('sell');
 
     },
-    mounted() {
-      //1、监听GoodsListItem中的图片是否加载完成(使用自己封装的防抖函数控制执行次数)
-      const refresh = debounce(this.$refs.scroll.refresh, 100)
-      this.$bus.$on('itemImageLoad', () => {
-        //refresh():重新计算 better-scroll,   this.$refs.scroll：组件创建完成才能执行后面函数
-        this.$refs.scroll && refresh();
-      })
-    },
+
+    //使用公共代码（混入）
+    mixins: [itemImgListenerMixin],
+
     //进入本组件时触发
     activated() {
       //一进入组件就滚动到离开时保存的位置
@@ -210,8 +206,11 @@
     },
     //离开本组件时触发
     deactivated() {
-      //保存离开时的位置
+      //1、保存离开时的位置
       this.saveY = this.$refs.scroll.getScrollY();
+
+      //2、取消全局事件的监听
+      this.$bus.$off('itemImageLoad', this.itemImgListener);
     }
   }
 </script>
@@ -231,6 +230,7 @@
     position: relative;
     z-index: 9;
   }
+
   .tab-control2 {
     position: fixed;
     margin-top: -1px;

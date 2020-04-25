@@ -28,6 +28,10 @@
       pullDownRefresh: {
         type: Boolean,
         default: false
+      },
+      pullDownRefreshStop: {
+        type: Number,
+        default: 0
       }
     },
     mounted() {
@@ -41,7 +45,9 @@
         },
         pullDownRefresh: {
           boolean: this.pullDownRefresh,
-          threshold: 40
+          threshold: 40,
+          //刷新数据的过程中，回弹停留在距离顶部还有40px的位置
+          stop: this.pullDownRefreshStop
         },
         click: true
       })

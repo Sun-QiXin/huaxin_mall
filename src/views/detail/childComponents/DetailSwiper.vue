@@ -2,7 +2,7 @@
   <div>
     <swiper v-show="isZoom" class="detail-swiper">
       <swiper-item v-for="(item,index) in topImages" :key="index">
-        <img :src="item" alt="" @click="imgClick(item)">
+        <img :src="item" alt="" @click="imgClick(item)" @load="imgLoad">
       </swiper-item>
     </swiper>
 
@@ -40,6 +40,9 @@
       imgClick(item) {
         this.isZoom = !this.isZoom
         this.showImg = item;
+      },
+      imgLoad(){
+        this.$emit('imgLoad');
       }
     }
   }
