@@ -37,11 +37,11 @@
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import Scroll from "components/common/scroll/Scroll";
-  import BackTop from "components/common/backTop/BackTop";
 
   //封装的工具函数
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {itemImgListenerMixin} from "commonjs/mixin";
+  import {itemImgListenerMixin,backTopMixin} from "commonjs/mixin";
+  import {TOP_DISTANCE, POP, NEW, SELL} from "../../commonjs/const";
 
 
   export default {
@@ -53,8 +53,7 @@
       NavBar,
       TabControl,
       GoodsList,
-      Scroll,
-      BackTop
+      Scroll
     },
     data() {
       return {
@@ -66,7 +65,6 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false,
         msg: '↓下拉刷新',
         isMsg: true,
         isShowRefreshMsg: true,
@@ -89,24 +87,24 @@
         switch (index) {
           case 0:
             //如果当前页面不是正在显示的就滚动到所点击标签的起始位置
-            if (this.currentType != 'pop') {
-              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop) + 43, 0);
+            if (this.currentType != POP && this.isTabFixed) {
+              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
             }
-            this.currentType = 'pop';
+            this.currentType = POP;
             break;
 
           case 1:
-            if (this.currentType != 'new') {
-              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop) + 43, 0);
+            if (this.currentType != NEW && this.isTabFixed) {
+              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
             }
-            this.currentType = 'new';
+            this.currentType = NEW;
             break;
 
           case 2:
-            if (this.currentType != 'sell') {
-              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop) + 43, 0);
+            if (this.currentType != SELL && this.isTabFixed) {
+              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
             }
-            this.currentType = 'sell';
+            this.currentType = SELL;
             break;
         }
         //让两个组件索引值保持一致
@@ -114,13 +112,7 @@
         this.$refs.tabControl2.currentIndex = index;
       },
 
-      //2、监听组件的点击（需要在click后面加native）
-      backClick() {
-        //访问Scroll组件的方法
-        this.$refs.scroll && this.$refs.scroll.scrollTo(0, 0, 1000);
-      },
-
-      //3、监听滚动的位置（使用scroll组件传过来的事件）
+      //2、监听滚动的位置（使用scroll组件传过来的事件）
       ContentScroll(position) {
         //1)、改变上拉刷新时的文字
         if (this.isMsg && position.y > 40) {
@@ -135,18 +127,18 @@
         }
 
         //2)、监听BackTop是否显示
-        this.isShowBackTop = position.y < -2000
+        this.isShowBackTop = position.y < -TOP_DISTANCE;
 
         //3)、判断tabControl是否需要吸顶显示
-        this.isTabFixed = this.tabOffsetTop - 41 <= (-position.y);
+        this.isTabFixed = this.tabOffsetTop <= (-position.y);
       },
 
-      //4、监听上拉事件（使用scroll组件传过来的事件）
+      //3、监听上拉事件（使用scroll组件传过来的事件）
       loadMore() {
         this.getHomeGoods(this.currentType);
       },
 
-      //5、监听下拉事件（使用scroll组件传过来的事件）
+      //4、监听下拉事件（使用scroll组件传过来的事件）
       homePullingDown() {
         this.msg = "刷新中......"
         setTimeout(() => {
@@ -155,7 +147,7 @@
         }, 500)
       },
 
-      //6、获取tabControl组件距离顶部的距离,所有的组件都有一个$el属性，用于拿到组件中的元素
+      //5、获取tabControl组件距离顶部的距离,所有的组件都有一个$el属性，用于拿到组件中的元素
       //需要监听上半部分的图片加载完成
       swiperImgLoad() {
         //mixin中的防抖
@@ -195,7 +187,7 @@
     },
 
     //使用公共代码（混入）
-    mixins: [itemImgListenerMixin],
+    mixins: [itemImgListenerMixin, backTopMixin],
 
     //进入本组件时触发
     activated() {
@@ -238,6 +230,7 @@
   }
 
   .content {
+    position: relative;
     height: calc(100vh - 93px);
     overflow: hidden;
   }

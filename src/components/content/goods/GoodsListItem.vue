@@ -5,9 +5,9 @@
     <div class="msg">
         <span class="price">
         <span>限时价</span>
-        {{goodsItem.price}}
+        {{showPrice}}
         </span>
-      <span class="collect">{{goodsItem.orgPrice}}</span>
+      <span class="collect">{{showOldPrice}}</span>
     </div>
     <button @click="goodsItemBuyClick">立即购买</button>
   </div>
@@ -25,9 +25,28 @@
       }
     },
     computed: {
+      //根据服务器传过来的数据寻找图片显示
       showImage() {
         return this.goodsItem.image || this.goodsItem.show.img;
-      }
+      },
+
+      //根据当前路由显示不同的价格
+      showPrice() {
+        if (this.$route.path.indexOf("/home") !== -1) {
+          return this.goodsItem.price;
+        } else if (this.$route.path.indexOf("/detail") !== -1) {
+          return this.goodsItem.discountPrice;
+        }
+      },
+
+      //根据当前路由显示不同的原价格
+      showOldPrice() {
+        if (this.$route.path.indexOf("/home") !== -1) {
+          return this.goodsItem.orgPrice;
+        } else if (this.$route.path.indexOf("/detail") !== -1) {
+          return '￥' + this.goodsItem.price;
+        }
+      },
     },
     methods: {
       //监听图片加载
