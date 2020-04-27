@@ -15,12 +15,11 @@
     <back-top v-show="isShowBackTop" @click.native="backClick"/>
     <detail-shopping-cart :shopping-cart-info="ShoppingCartInfo" ref="detailShoppingCart"
                           @addShoppingCart="addShoppingCart"/>
-
-    <div v-show="isShowAddShoppingCartMsg" class="addShoppingCartMsg"><span>{{addShoppingCartMsg}}</span></div>
   </div>
 </template>
 
 <script>
+  //子组件
   import DetailNavBar from "./childComponents/DetailNavBar";
   import DetailSwiper from "./childComponents/DetailSwiper";
   import DetailBaseInfo from "./childComponents/DetailBaseInfo";
@@ -31,15 +30,22 @@
   import DetailBottomBar from "./childComponents/DetailBottomBar";
   import DetailShoppingCart from "./childComponents/DetailShoppingCart";
 
+  //公共组件
   import BScroll from "components/common/scroll/Scroll.vue"
   import GoodsList from "components/content/goods/GoodsList";
   import GoodsListItem from "components/content/goods/GoodsListItem";
-
-  import {getDetailData, getRecommend, GoodsInfo, Shop, GoodsParam} from "network/detail";
   import Scroll from "components/common/scroll/Scroll";
+
+  //封装的工具函数
+  import {getDetailData, getRecommend, GoodsInfo, Shop, GoodsParam} from "network/detail";
   import {itemImgListenerMixin, backTopMixin} from "commonjs/mixin";
   import {debounce} from "commonjs/utils";
-  import {TOP_DISTANCE} from "../../commonjs/const";
+  import {TOP_DISTANCE} from "commonjs/const";
+
+  //mapActions辅助函数仅仅是将store中的Actions映射到局部methods
+  import {mapActions} from 'vuex'
+
+  import Toast from "../../components/common/toast/Toast";
 
   export default {
     name: "Detail",
@@ -56,7 +62,8 @@
       DetailBottomBar,
       DetailShoppingCart,
       GoodsList,
-      GoodsListItem
+      GoodsListItem,
+      Toast
     },
     data() {
       return {
@@ -72,11 +79,14 @@
         getThemeTopY: null,
         titleCurrentIndex: 0,
         ShoppingCartInfo: {},
-        addShoppingCartMsg: '✔加入购物车成功！',
-        isShowAddShoppingCartMsg: false
+        // addShoppingCartMsg: '✔加入购物车成功！',
+        // isShowAddShoppingCartMsg: false
       }
     },
     methods: {
+      //mapActions辅助函数仅仅是将store中的Actions映射到局部methods
+      ...mapActions(["addShoppingCartGoods"]),
+
       //1、监听detailGoodsInfo组件中的图片是否加载完毕
       detailGoodsInfoImageLoad() {
         //1)使用mixin中的保存的防抖动函数
@@ -88,8 +98,11 @@
 
       //2、监听detailSwiperImgLoad组件中的轮播图片是否加载完毕
       detailSwiperImgLoad() {
-        //使用mixin中的保存的防抖动函数
+        //1)使用mixin中的保存的防抖动函数
         this.mixinRefresh();
+
+        //2)每张图片加载完后调用getThemeTopY赋值
+        this.getThemeTopY();
       },
 
       //3、监听标题的点击,并滚动到点击标题的位置
@@ -133,25 +146,25 @@
       addShoppingCart() {
         //1)获取购物车需要展示的信息
         const product = {};
-        product.image = this.topImages[0];
-        product.title = this.goodsInfo.title;
+        product.name = this.shop.name;
         product.desc = this.goodsInfo.desc;
         product.iid = this.iid;
         product.currentCounts = this.$refs.detailShoppingCart.currentCounts;
         product.realPrice = this.$refs.detailShoppingCart.nowPrice;
         product.productStyleMsg = this.$refs.detailShoppingCart.productStyleMsg;
         product.productSizeMsg = this.$refs.detailShoppingCart.productSizeMsg;
+        product.image = this.$refs.detailShoppingCart.currentImg;
 
-        //2)点击确定后关闭购物车，显示提示信息
-        this.$refs.detailShoppingCart.isShowShoppingCart = false;
-        //显示信息
-        this.isShowAddShoppingCartMsg = true;
-        //过500ms隐藏
-        setTimeout(()=>{
-          this.isShowAddShoppingCartMsg = false;
-        },800)
-
-        //3)将商品加入到购物车
+        //2)将商品加入到购物车执行成功后调用then(Vuex)
+        this.addShoppingCartGoods(product).then(res => {
+          //点击确定后关闭购物车，显示提示信息
+          this.$refs.detailShoppingCart.isShowShoppingCart = false;
+          //直接调用我们自己封装的toast插件，显示提示信息
+          this.$toast.showToast(res, 800);
+        }).catch(err => {
+          //直接调用我们自己封装的toast插件，显示提示信息
+          this.$toast.showToast(err, 800);
+        })
       }
     },
     created() {
@@ -194,7 +207,7 @@
           this.themeTopYs.push(this.$refs.detailCommentInfo.$el.offsetTop);
           this.themeTopYs.push(this.$refs.goodsList.$el.offsetTop);
           this.themeTopYs.push(Number.MAX_VALUE);
-        }, 300)
+        }, 50)
       })
 
       //3、获取推荐数据
@@ -209,9 +222,6 @@
     destroyed() {
       //1、取消全局事件的监听
       this.$bus.$off('itemImageLoad', this.itemImgListener);
-    },
-    mounted() {
-
     }
   }
 </script>
@@ -233,26 +243,4 @@
     height: calc(100vh - 93px);
     overflow: hidden;
   }
-  .addShoppingCartMsg{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    bottom: 49px;
-    right: 0;
-    left: 0;
-    height: calc(100% - 44px - 49px);
-    background-color: rgba(0,0,0,0.7);
-  }
-  .addShoppingCartMsg span{
-    color: white;
-    display: block;
-    width: 50%;
-    height:26px;
-    line-height: 26px;
-    text-align: center;
-    border-radius: 7px;
-    background-image: linear-gradient(90deg,rgba(7, 153, 146,.8),rgba(96, 163, 188,.7));
-  }
-
 </style>

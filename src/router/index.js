@@ -25,7 +25,7 @@ const routes = [
   },
   {
     path:'/shopCart',
-    component:()=>import('views/shopcart/ShopCart'),
+    component:()=>import('views/shoppingCart/ShoppingCart'),
     meta:{
       title:'购物车'
     }

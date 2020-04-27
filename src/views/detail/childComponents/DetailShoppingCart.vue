@@ -31,9 +31,9 @@
         <div class="showCount">
           <p>数量:</p>
           <div class="btns">
-            <button @click="decrease">-</button>
+            <button @click="decrease">－</button>
             <button>{{currentCounts}}</button>
-            <button @click="increase">+</button>
+            <button @click="increase">＋</button>
           </div>
           <span style="color: var(--color-high-text);font-size: 13px">{{tipsMsg}}</span>
         </div>
@@ -64,7 +64,8 @@
         currentIndex2: 0,
         currentCounts: 1,
         tipsMsg: "",
-        isShowShoppingCart: false
+        isShowShoppingCart: false,
+        currentImg: null
       }
     },
     props: {
@@ -85,6 +86,8 @@
               this.stock = product.stock;
               this.productStyleMsg = "\"" + product.style + "\"";
               this.productSizeMsg = "\"" + product.size + "\"";
+              //保存当前选中的图片
+              this.currentImg = product.img;
               return product.img;
             }
           }
@@ -270,7 +273,7 @@
     margin: 10px;
     width: 107px;
     border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.6);
   }
 
   .showCount p {

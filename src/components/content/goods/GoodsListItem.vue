@@ -1,5 +1,5 @@
 <template>
-  <div id="goods-list-item">
+  <div id="goods-list-item" @click="goodsItemBuyClick">
     <img :src="showImage" alt="" class="img" @load="imageLoad">
     <p>{{goodsItem.title}}</p>
     <div class="msg">
@@ -9,7 +9,7 @@
         </span>
       <span class="collect">{{showOldPrice}}</span>
     </div>
-    <button @click="goodsItemBuyClick">立即购买</button>
+    <button>立即购买</button>
   </div>
 </template>
 

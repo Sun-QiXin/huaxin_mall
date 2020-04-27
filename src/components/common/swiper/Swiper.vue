@@ -48,14 +48,14 @@
       }
     },
     mounted: function () {
-      this.$nextTick(()=>{
+      this.$nextTick(() => {
         // 1.操作DOM, 在前后添加Slide
         setTimeout(() => {
           this.handleDom();
 
           // 2.开启定时器
           this.startTimer();
-        }, 1000)
+        }, 500)
       })
     },
     methods: {
@@ -123,25 +123,27 @@
        * 操作DOM, 在DOM前后添加Slide
        */
       handleDom: function () {
-        // 1.获取要操作的元素
-        let swiperEl = document.querySelector('#swiper');
-        let slidesEls = swiperEl.getElementsByClassName('slide');
+        this.$nextTick(() => {
+          // 1.获取要操作的元素
+          let swiperEl = document.querySelector('#swiper');
+          let slidesEls = swiperEl.getElementsByClassName('slide');
 
-        // 2.保存个数
-        this.slideCount = slidesEls.length;
+          // 2.保存个数
+          this.slideCount = slidesEls.length;
 
-        // 3.如果大于1个, 那么在前后分别添加一个slide
-        if (this.slideCount > 1) {
-          let cloneFirst = slidesEls[0].cloneNode(true);
-          let cloneLast = slidesEls[this.slideCount - 1].cloneNode(true);
-          swiperEl.insertBefore(cloneLast, slidesEls[0]);
-          swiperEl.appendChild(cloneFirst);
-          this.totalWidth = swiperEl.offsetWidth;
-          this.swiperStyle = swiperEl.style;
-        }
+          // 3.如果大于1个, 那么在前后分别添加一个slide
+          if (this.slideCount > 1) {
+            let cloneFirst = slidesEls[0].cloneNode(true);
+            let cloneLast = slidesEls[this.slideCount - 1].cloneNode(true);
+            swiperEl.insertBefore(cloneLast, slidesEls[0]);
+            swiperEl.appendChild(cloneFirst);
+            this.totalWidth = swiperEl.offsetWidth;
+            this.swiperStyle = swiperEl.style;
+          }
 
-        // 4.让swiper元素, 显示第一个(目前是显示前面添加的最后一个元素)
-        this.setTransform(-this.totalWidth);
+          // 4.让swiper元素, 显示第一个(目前是显示前面添加的最后一个元素)
+          this.setTransform(-this.totalWidth);
+        })
       },
 
       /**
