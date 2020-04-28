@@ -1,5 +1,8 @@
 import {debounce} from "commonjs/utils";
 import BackTop from "components/common/backTop/BackTop";
+import TabControl from "../components/content/tabControl/TabControl";
+import {POP, SELL, NEW} from "./const";
+
 /**
  * 抽取组件中的公共代码（混入）
  * 监听GoodsListItem中的图片是否加载完成
@@ -30,7 +33,7 @@ export const itemImgListenerMixin = {
  * @type {{components: {BackTop}, data(): {isShowBackTop: boolean}, methods: {backClick(): void}}}
  */
 export const backTopMixin = {
-  components:{
+  components: {
     BackTop
   },
   data() {
@@ -39,11 +42,60 @@ export const backTopMixin = {
       isShowBackTop: false
     }
   },
-  methods:{
+  methods: {
     //2、监听组件的点击（需要在click后面加native）
     backClick() {
       //访问Scroll组件的方法
       this.$refs.scroll && this.$refs.scroll.scrollTo(0, 0, 1000);
     },
+  }
+}
+
+/**
+ * tabControl导航栏的公共代码
+ * @type {{data: (function(): {currentType: string}), methods: {tabClick(*): void}}}
+ */
+export const tabControlMixin = {
+  components: {
+    TabControl
+  },
+  data: function () {
+    return {
+      currentType: POP,
+      MixinCurrentIndex: 0
+    }
+  },
+  methods: {
+    //1、监听tabControl的点击
+    tabClick(index) {
+      this.MixinCurrentIndex = index;
+      this._tabClick();
+      switch (index) {
+        case 0:
+          //如果当前页面不是正在显示的就滚动到所点击标签的起始位置
+          if (this.currentType != POP && this.isTabFixed) {
+            this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
+          }
+          this.currentType = POP;
+          break;
+
+        case 1:
+          if (this.currentType != NEW && this.isTabFixed) {
+            this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
+          }
+          this.currentType = NEW;
+          break;
+
+        case 2:
+          if (this.currentType != SELL && this.isTabFixed) {
+            this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
+          }
+          this.currentType = SELL;
+          break;
+      }
+      /*//让两个组件索引值保持一致
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;*/
+    }
   }
 }

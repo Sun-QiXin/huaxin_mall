@@ -34,14 +34,13 @@
 
   //公共组件
   import NavBar from "components/common/navbar/NavBar";
-  import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import Scroll from "components/common/scroll/Scroll";
 
   //封装的工具函数
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {itemImgListenerMixin,backTopMixin} from "commonjs/mixin";
-  import {TOP_DISTANCE, POP, NEW, SELL} from "../../commonjs/const";
+  import {itemImgListenerMixin,backTopMixin,tabControlMixin} from "commonjs/mixin";
+  import {TOP_DISTANCE} from "commonjs/const";
 
 
   export default {
@@ -51,7 +50,6 @@
       HomeRecommendView,
       HomeFeatureView,
       NavBar,
-      TabControl,
       GoodsList,
       Scroll
     },
@@ -64,7 +62,6 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []}
         },
-        currentType: 'pop',
         msg: '↓下拉刷新',
         isMsg: true,
         isShowRefreshMsg: true,
@@ -82,34 +79,11 @@
       /**
        * 事件监听相关的方法
        */
-      //1、监听tabControl的点击
-      tabClick(index) {
-        switch (index) {
-          case 0:
-            //如果当前页面不是正在显示的就滚动到所点击标签的起始位置
-            if (this.currentType != POP && this.isTabFixed) {
-              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
-            }
-            this.currentType = POP;
-            break;
 
-          case 1:
-            if (this.currentType != NEW && this.isTabFixed) {
-              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
-            }
-            this.currentType = NEW;
-            break;
-
-          case 2:
-            if (this.currentType != SELL && this.isTabFixed) {
-              this.$refs.scroll && this.$refs.scroll.scrollTo(0, (-this.tabOffsetTop), 0);
-            }
-            this.currentType = SELL;
-            break;
-        }
-        //让两个组件索引值保持一致
-        this.$refs.tabControl1.currentIndex = index;
-        this.$refs.tabControl2.currentIndex = index;
+      //1、监听tabControl的点击,mixin里的tabClick发生点击事件并调用此方法
+      _tabClick(){
+        this.$refs.tabControl1.currentIndex = this.MixinCurrentIndex;
+        this.$refs.tabControl2.currentIndex = this.MixinCurrentIndex;
       },
 
       //2、监听滚动的位置（使用scroll组件传过来的事件）
@@ -187,7 +161,7 @@
     },
 
     //使用公共代码（混入）
-    mixins: [itemImgListenerMixin, backTopMixin],
+    mixins: [itemImgListenerMixin, backTopMixin,tabControlMixin],
 
     //进入本组件时触发
     activated() {

@@ -72,8 +72,11 @@
 
 <style scoped>
   #shopping-cart-bottom-bar {
+    position: fixed;
+    bottom: 49px;
+    left: 0;
+    right: 0;
     display: flex;
-    position: relative;
     height: 40px;
     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
   }

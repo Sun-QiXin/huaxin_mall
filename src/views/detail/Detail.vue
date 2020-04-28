@@ -76,7 +76,7 @@
         commentInfo: {},
         recommend: [],
         themeTopYs: [],
-        getThemeTopY: null,
+        getThemeTopY: {},
         titleCurrentIndex: 0,
         ShoppingCartInfo: {},
         // addShoppingCartMsg: '✔加入购物车成功！',
@@ -93,7 +93,9 @@
         this.mixinRefresh();
 
         //2)每张图片加载完后调用getThemeTopY赋值
-        this.getThemeTopY();
+        this.$nextTick(() => {
+          this.getThemeTopY();
+        })
       },
 
       //2、监听detailSwiperImgLoad组件中的轮播图片是否加载完毕
@@ -102,7 +104,9 @@
         this.mixinRefresh();
 
         //2)每张图片加载完后调用getThemeTopY赋值
-        this.getThemeTopY();
+        this.$nextTick(() => {
+          this.getThemeTopY();
+        })
       },
 
       //3、监听标题的点击,并滚动到点击标题的位置
@@ -173,41 +177,42 @@
 
       //2、根据iid请求详情数据
       getDetailData(this.iid).then(res => {
+        if (res !== undefined) {
+          const data = res.result;
+          //1)获取顶部轮播图片数据
+          this.topImages = data.itemInfo.topImages;
 
-        const data = res.result;
-        //1)获取顶部轮播图片数据
-        this.topImages = data.itemInfo.topImages;
+          //2)将商品信息封装到GoodsInfo类中
+          this.goodsInfo = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services);
 
-        //2)将商品信息封装到GoodsInfo类中
-        this.goodsInfo = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services);
+          //3)将店铺信息封装到Shop类中
+          this.shop = new Shop(data.shopInfo);
 
-        //3)将店铺信息封装到Shop类中
-        this.shop = new Shop(data.shopInfo);
+          //4)保存商品的详情数据
+          this.detailInfo = data.detailInfo;
 
-        //4)保存商品的详情数据
-        this.detailInfo = data.detailInfo;
+          //5)将参数信息封装到GoodsParam类中
+          this.parameterInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
 
-        //5)将参数信息封装到GoodsParam类中
-        this.parameterInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule);
+          //6)保存评论信息
+          if (data.rate.cRate !== 0) {
+            this.commentInfo = data.rate.list[0];
+          }
 
-        //6)保存评论信息
-        if (data.rate.cRate !== 0) {
-          this.commentInfo = data.rate.list[0];
+          //7)保存购物车信息
+          this.ShoppingCartInfo = data.skuInfo;
+
+          //8给getThemeTopY赋值（使用防抖函数）
+          this.getThemeTopY = debounce(() => {
+            //获取每个组件距离顶部的Y值
+            this.themeTopYs = [];
+            this.themeTopYs.push(0);
+            this.themeTopYs.push(this.$refs.detailParamInfo.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.detailCommentInfo.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.goodsList.$el.offsetTop);
+            this.themeTopYs.push(Number.MAX_VALUE);
+          }, 50)
         }
-
-        //7)保存购物车信息
-        this.ShoppingCartInfo = data.skuInfo;
-
-        //8给getThemeTopY赋值（使用防抖函数）
-        this.getThemeTopY = debounce(() => {
-          //获取每个组件距离顶部的Y值
-          this.themeTopYs = [];
-          this.themeTopYs.push(0);
-          this.themeTopYs.push(this.$refs.detailParamInfo.$el.offsetTop);
-          this.themeTopYs.push(this.$refs.detailCommentInfo.$el.offsetTop);
-          this.themeTopYs.push(this.$refs.goodsList.$el.offsetTop);
-          this.themeTopYs.push(Number.MAX_VALUE);
-        }, 50)
       })
 
       //3、获取推荐数据

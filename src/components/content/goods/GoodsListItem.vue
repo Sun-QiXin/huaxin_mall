@@ -1,6 +1,6 @@
 <template>
-  <div id="goods-list-item" @click="goodsItemBuyClick">
-    <img :src="showImage" alt="" class="img" @load="imageLoad">
+  <div id="goods-list-item" @click="goodsItemBuyClick" :class="{'max-180':isMaxWidth}">
+    <img v-lazy="showImage" alt="" class="img" @load="imageLoad">
     <p>{{goodsItem.title}}</p>
     <div class="msg">
         <span class="price">
@@ -16,6 +16,11 @@
 <script>
   export default {
     name: "GoodsListItem",
+    data() {
+      return {
+        isMaxWidth: false
+      }
+    },
     props: {
       goodsItem: {
         type: Object,
@@ -27,7 +32,7 @@
     computed: {
       //根据服务器传过来的数据寻找图片显示
       showImage() {
-        return this.goodsItem.image || this.goodsItem.show.img;
+        return this.goodsItem.img || this.goodsItem.image || this.goodsItem.show.img
       },
 
       //根据当前路由显示不同的价格
@@ -36,6 +41,8 @@
           return this.goodsItem.price;
         } else if (this.$route.path.indexOf("/detail") !== -1) {
           return this.goodsItem.discountPrice;
+        } else if (this.$route.path.indexOf("/category") !== -1) {
+          return this.goodsItem.price;
         }
       },
 
@@ -45,6 +52,8 @@
           return this.goodsItem.orgPrice;
         } else if (this.$route.path.indexOf("/detail") !== -1) {
           return '￥' + this.goodsItem.price;
+        } else if (this.$route.path.indexOf("/category") !== -1) {
+          return '￥' + this.goodsItem.orgPrice;
         }
       },
     },
@@ -57,6 +66,21 @@
       goodsItemBuyClick() {
         this.$router.push("/detail/" + this.goodsItem.iid);
       }
+    },
+    mounted() {
+      //如果父容器的宽度低于180px，就调整宽度高度
+      this.$nextTick(()=>{
+        const currentWidth = document.getElementById('goods-list-item').offsetWidth;
+        if (currentWidth < 180) {
+          if (!this.isMaxWidth){
+            this.isMaxWidth = true;
+          }
+        }else {
+          if (this.isMaxWidth){
+            this.isMaxWidth = false;
+          }
+        }
+      })
     }
   }
 </script>
@@ -163,12 +187,15 @@
   }
 
   #goods-list-item .msg {
+    display: flex;
     padding: 0px 10px 0px 10px;
     display: flex;
     justify-content: space-between;
   }
 
   #goods-list-item .price {
+    flex: 2;
+    max-width: 100%;
     font-size: 18px;
     font-weight: bold;
   }
@@ -183,6 +210,7 @@
   }
 
   #goods-list-item .collect {
+    flex: 1;
     font-style: oblique;
     font-size: 12px;
     font-weight: bold;
@@ -200,5 +228,26 @@
     outline: none;
     width: 90%;
     background-color: var(--color-high-text);
+  }
+
+  /*如果goods-list-item容器的宽度小于180px*/
+  .max-180 img{
+    height: 30vh!important;
+  }
+
+  .max-180 .price{
+    font-size: 14px!important;
+  }
+
+  .max-180 .price span{
+    font-size: 10px!important;
+  }
+
+  .max-180 .collect{
+    font-size: 10px!important;
+  }
+
+  .max-180 .msg{
+    padding: 0px 3px 0px 3px!important;
   }
 </style>
