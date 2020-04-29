@@ -4,18 +4,29 @@
       <check-button class="check-btn" :is-checked="isCheckAll"/>
       <span>全选</span>
     </div>
-    <div class="total-price">合计：<span>￥{{totalPrice}}</span></div>
-    <div class="calculation" @click="calculationClick">去计算({{totalCount}})</div>
+    <div class="total-price" v-show="!isShowMessage">合计：<span>￥{{totalPrice}}</span></div>
+    <div class="total-price cancel" @click="cancelClick" v-show="isShowMessage">取消</div>
+    <div class="calculation" @click="calculationClick">{{message}}({{totalCount}})</div>
   </div>
 </template>
 
 <script>
   import CheckButton from "components/content/checkButton/CheckButton";
 
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
 
   export default {
     name: "ShoppingCartBottomBar",
+    props: {
+      message: {
+        type: String,
+        default: '结算'
+      },
+      isShowMessage: {
+        type: Boolean,
+        default: false
+      }
+    },
     components: {
       CheckButton
     },
@@ -44,6 +55,7 @@
       }
     },
     methods: {
+      ...mapMutations(["deleteProduct"]),
       //1、全选按钮的实现
       checkAllClick() {
         //计算属性isCheckAll为true表示当前为全部选中状态，点击全选那就全部不选中
@@ -64,7 +76,14 @@
         //some()：一真即真
         if (!this.shoppingCartList.some(item => item.checked)) {
           this.$toast.showToast("请至少选择一项商品!", 800);
+        } else if (this.message.indexOf('删除') !== -1) {
+          this.deleteProduct();
         }
+      },
+
+      //3、点击取消
+      cancelClick() {
+        this.$emit('cancelClick');
       }
     }
   }
@@ -113,5 +132,10 @@
     flex: 1;
     height: 40px;
     line-height: 40px;
+  }
+
+  .cancel {
+    color: white;
+    background-color: var(--color-tint);
   }
 </style>

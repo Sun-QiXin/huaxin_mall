@@ -81,7 +81,6 @@
         getCategory().then(res => {
           // 1)保存分类数据
           this.categories = res.data.category.list
-          console.log(res);
           // 2)初始化每个类别的子数据
           for (let i = 0; i < this.categories.length; i++) {
             this.categoryData[i] = {
@@ -141,9 +140,9 @@
       },
 
       //1、监听tabControl的点击,mixin里的tabClick发生点击事件并调用此方法
-      _tabClick(){
-        this.$refs.tabControl1.currentIndex = this.MixinCurrentIndex;
-        this.$refs.tabControl2.currentIndex = this.MixinCurrentIndex;
+      _tabClick(index){
+        this.$refs.tabControl1.currentIndex = index;
+        this.$refs.tabControl2.currentIndex = index;
       },
     },
     mounted() {

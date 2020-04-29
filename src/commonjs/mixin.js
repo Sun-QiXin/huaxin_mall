@@ -61,15 +61,15 @@ export const tabControlMixin = {
   },
   data: function () {
     return {
-      currentType: POP,
-      MixinCurrentIndex: 0
+      currentType: POP
     }
   },
   methods: {
     //1、监听tabControl的点击
     tabClick(index) {
-      this.MixinCurrentIndex = index;
-      this._tabClick();
+      //调用此方法来保持两个tabControl的选项一致
+      this._tabClick(index);
+
       switch (index) {
         case 0:
           //如果当前页面不是正在显示的就滚动到所点击标签的起始位置
@@ -93,9 +93,6 @@ export const tabControlMixin = {
           this.currentType = SELL;
           break;
       }
-      /*//让两个组件索引值保持一致
-      this.$refs.tabControl1.currentIndex = index;
-      this.$refs.tabControl2.currentIndex = index;*/
     }
   }
 }

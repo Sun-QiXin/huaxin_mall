@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export default {
   //mutations尽量做单一的事情，调试的时候好追踪
   /**
@@ -41,5 +43,12 @@ export default {
     })
     //2、改变checked值
     oldProduct.currentCounts += payload.number;
+  },
+
+  /**
+   * 删除选中的商品
+   */
+  deleteProduct(state) {
+    state.shoppingCartGoods = state.shoppingCartGoods.filter(item => !item.checked);
   }
 }

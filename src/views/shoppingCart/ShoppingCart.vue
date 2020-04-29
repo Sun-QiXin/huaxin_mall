@@ -3,13 +3,15 @@
     <!--导航-->
     <nav-bar class="nav-bar">
       <div slot="nav-bar-center">购物车({{shoppingCartLength}})</div>
+      <div slot="nav-bar-right" @click="deleteProduct">管理</div>
     </nav-bar>
 
     <!--商品的列表-->
     <shopping-cart-list/>
 
     <!--底部汇总-->
-    <shopping-cart-bottom-bar/>
+    <shopping-cart-bottom-bar :message="message" :is-show-message="isShowMessage"
+                              @cancelClick="cancelClick"/>
   </div>
 </template>
 
@@ -25,6 +27,12 @@
 
   export default {
     name: "ShoppingCart",
+    data() {
+      return {
+        message: '结算',
+        isShowMessage: false
+      }
+    },
     components: {
       NavBar,
       ShoppingCartList,
@@ -38,15 +46,28 @@
         length: "shoppingCartLength",
         list: "shoppingCartList"
       })*/
+    },
+    methods: {
+      //1、监听管理按钮的点击
+      deleteProduct() {
+        this.message = '删除';
+        this.isShowMessage = true;
+      },
+      //2、子组件取消按钮的点击
+      cancelClick(){
+        this.isShowMessage = false;
+        this.message = '结算';
+      }
     }
   }
 </script>
 
 <style scoped>
-  #shopping-cart{
+  #shopping-cart {
     position: relative;
 
   }
+
   .nav-bar {
     background-color: var(--color-tint);
     color: white;
