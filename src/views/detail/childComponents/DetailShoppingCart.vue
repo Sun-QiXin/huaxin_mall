@@ -31,9 +31,9 @@
         <div class="showCount">
           <p>数量:</p>
           <div class="btns">
-            <button @click="decrease">－</button>
-            <button>{{currentCounts}}</button>
-            <button @click="increase">＋</button>
+            <div @click="decrease">－</div>
+            <div>{{currentCounts}}</div>
+            <div @click="increase">＋</div>
           </div>
           <span style="color: var(--color-high-text);font-size: 13px">{{tipsMsg}}</span>
         </div>
@@ -183,7 +183,7 @@
   }
 
   .content {
-    height: calc(60vh - 151px - 44px);
+    height: calc(60vh - 151px - 54px);
     overflow: hidden;
   }
 
@@ -268,30 +268,41 @@
     border: 1px solid var(--color-high-text);
   }
 
-  .showCount .btns {
-    display: inline-block;
-    margin: 10px;
-    width: 107px;
-    border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.6);
-  }
+
 
   .showCount p {
     font-size: 14px;
   }
 
-  .showCount .btns button {
+  .showCount .btns {
+    margin-top: 10px;
+    display: flex;
+    text-align: center;
+    height: 27px;
+    width: auto;
+  }
+  .showCount .btns div{
     height: 25px;
+    line-height: 25px;
     outline: none;
     background-color: #fff;
     border: none;
-    border-right: 1px solid rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.7);
     border-collapse: collapse;
     width: 35px;
   }
 
-  .showCount .btns button:last-child {
-    border: none;
+  .showCount .btns div:last-child {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .showCount .btns div:first-child {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+  }
+  .showCount .btns div:nth-child(2) {
+    border-right: none;
+    border-left: none;
   }
 
   .commit {

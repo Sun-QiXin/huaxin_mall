@@ -39,7 +39,7 @@
 
   //封装的工具函数
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {itemImgListenerMixin,backTopMixin,tabControlMixin} from "commonjs/mixin";
+  import {itemImgListenerMixin, backTopMixin, tabControlMixin} from "commonjs/mixin";
   import {TOP_DISTANCE} from "commonjs/const";
 
 
@@ -81,7 +81,7 @@
        */
 
       //1、监听tabControl的点击,mixin里的tabClick发生点击事件并调用此方法
-      _tabClick(index){
+      _tabClick(index) {
         this.$refs.tabControl1.currentIndex = index;
         this.$refs.tabControl2.currentIndex = index;
       },
@@ -117,7 +117,8 @@
         this.msg = "刷新中......"
         setTimeout(() => {
           this.msg = "刷新成功✔"
-          location.reload();
+          // location.reload();
+          window.location.href="http://app.huaxin.press";
         }, 500)
       },
 
@@ -161,7 +162,7 @@
     },
 
     //使用公共代码（混入）
-    mixins: [itemImgListenerMixin, backTopMixin,tabControlMixin],
+    mixins: [itemImgListenerMixin, backTopMixin, tabControlMixin],
 
     //进入本组件时触发
     activated() {

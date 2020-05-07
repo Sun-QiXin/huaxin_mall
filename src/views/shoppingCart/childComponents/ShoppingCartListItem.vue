@@ -18,9 +18,9 @@
       <div class="info-bottom">
         <div class="item-price left" @click="showDetail">¥{{product.realPrice}}</div>
         <div class="item-count right">
-          <span @click="decrease">－</span>
-          <span>{{product.currentCounts}}</span>
-          <span @click="increase">＋</span>
+          <div @click="decrease">－</div>
+          <div>{{product.currentCounts}}</div>
+          <div @click="increase">＋</div>
         </div>
       </div>
     </div>
@@ -163,18 +163,35 @@
   }
 
   .item-count {
-    border: 1px solid #777777;
-    border-radius: 5px;
+    margin-top: 10px;
+    display: flex;
+    text-align: center;
+    height: 25px;
+    width: auto;
   }
-
-  .item-count span {
-    border-right: 1px solid #777777;
-    position: relative;
-    display: inline-block;
-    width: 25px;
-  }
-
-  .item-count span:last-child {
+  .item-count div{
+    height: 23px;
+    line-height: 23px;
+    outline: none;
+    background-color: #fff;
     border: none;
+    border: 1px solid rgba(0, 0, 0, 0.7);
+    border-collapse: collapse;
+    width: 30px;
   }
+
+  .item-count div:last-child {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .item-count div:first-child {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+  }
+  .item-count div:nth-child(2) {
+    border-right: none;
+    border-left: none;
+  }
+
+
 </style>
