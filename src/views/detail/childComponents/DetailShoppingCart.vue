@@ -291,7 +291,6 @@
     border-collapse: collapse;
     width: 35px;
   }
-
   .showCount .btns div:last-child {
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;

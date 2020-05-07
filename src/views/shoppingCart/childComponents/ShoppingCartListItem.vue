@@ -179,7 +179,6 @@
     border-collapse: collapse;
     width: 30px;
   }
-
   .item-count div:last-child {
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
