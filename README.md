@@ -23,3 +23,6 @@ npm run build
 
 ### 自定义配置
 参照 [Configuration Reference](https://cli.vuejs.org/config/).
+
+### 提示
+如果接口失效，请联系微信coderwhy002获取新接口
